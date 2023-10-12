@@ -6,19 +6,24 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header('Content-type: application/json');
 
+$iduser = isset($_POST['id_user']) ? $_POST['id_user'] : '';
+$idMataPelajaran = isset($_POST['id_mata_pelajaran']) ? $_POST['id_mata_pelajaran'] : '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $sql = "
                 SELECT
-                    tbl_mata_pelajaran.id AS id,
-                    tbl_mata_pelajaran.id_user_input AS id_user_input,
-                    tbl_mata_pelajaran.mata_pelajaran AS mata_pelajaran,
-                    tbl_status_materi.status_materi AS status_materi
+                    id_user,
+                    id_mata_pelajaran,
+                    soal,
+                    jawaban,
+                    nilai 
                 FROM
-                    tbl_mata_pelajaran
-                JOIN tbl_materi ON tbl_mata_pelajaran.id = tbl_materi.id_mata_pelajaran
-                JOIN tbl_status_materi ON tbl_materi.id = tbl_status_materi.id_materi
+                    tbl_status_soal
+                    JOIN tbl_soal ON tbl_status_soal.id_soal = tbl_soal.id
+                    JOIN tbl_mata_pelajaran ON tbl_soal.id_mata_pelajaran = tbl_mata_pelajaran.id
+                WHERE
+                    id_user = $iduser AND id_mata_pelajaran = $idMataPelajaran
             ";
         $results = dbQuery($sql);
         $rows = array();
